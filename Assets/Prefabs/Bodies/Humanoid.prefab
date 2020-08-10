@@ -4833,7 +4833,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6106396283720770420}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.8947506, y: 4.4841137, z: -8.607422}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 270339046}
@@ -4903,6 +4903,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _status: 1
   _movingSpeed: 5
+  _checkGroundDist: 0.3
   _jumpForce: 200
   _throwForce: 100
   _jumpableSurfaces:
@@ -4910,6 +4911,7 @@ MonoBehaviour:
     m_Bits: 32263
   _hand: {fileID: 1298467443}
   _particle: {fileID: 0}
+  _animator: {fileID: 0}
 --- !u!1 &6106396283889429388
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,27 @@
 ﻿using Engine.Singleton;
 using System;
+using UnityEngine;
 
 public class GameLoopManager : Singleton<GameLoopManager>
 {
+    private bool _ispaused = false;
+
+    #region Properties
+
+    #region Set
+    public bool SetIsPaused
+    {
+        set
+        {
+            _ispaused = value;
+            if(_gamePaused != null)
+                _gamePaused(_ispaused);
+        }
+    }
+    #endregion Set
+    #endregion Properties
+
+    #region Events
     private event Action _updateBody = null;
     public event Action UpdateBody
     {
@@ -59,8 +78,28 @@ public class GameLoopManager : Singleton<GameLoopManager>
         }
     }
 
+    private event Action<bool> _gamePaused = null;
+    public event Action<bool> GamePaused
+    {
+        add
+        {
+            _gamePaused -= value;
+            _gamePaused += value;
+        }
+        remove
+        {
+            _gamePaused -= value;
+        }
+    }
+    #endregion Events
+
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        {
+            SetIsPaused = !_ispaused;
+        }
+
         if (_updateBody != null)
             _updateBody();
 

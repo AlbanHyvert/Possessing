@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Humanoid
+    uniqueID: 2306942191
+    locked: 0
+  - name: Ball
+    uniqueID: 2973959293
+    locked: 0
+  - name: Platform
+    uniqueID: 3682268865
+    locked: 0

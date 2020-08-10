@@ -26,6 +26,7 @@ public class BallBody : MonoBehaviour
 
     #region Properties
     #region GET
+    public E_BodyStatus GetStatus { get { return _status; } }
     public PlayerController GetPlayer { get { return _player; } }
     public Rigidbody2D GetRigidbody { get { return _rb; } }
     public bool GetIsGrounded { get { return _isGrounded; } }
@@ -151,6 +152,20 @@ public class BallBody : MonoBehaviour
         PlayerManager.Instance.FindPlayer += FindPlayer;
 
         Init();
+
+        ParticleSystem.MainModule main = _particle.main;
+
+        switch (_status)
+        {
+            case E_BodyStatus.POSSESSED:
+                main.startColor = Color.blue;
+                break;
+            case E_BodyStatus.FREE:
+                main.startColor = Color.yellow;
+                break;
+            default:
+                break;
+        }
 
         GameLoopManager.Instance.UpdateBody += Tick;
     }

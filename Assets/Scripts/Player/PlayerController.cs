@@ -7,8 +7,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _maxDistFromPlayer = 100;
     private E_Bodies _currentBody = E_Bodies.PLAYER;
     private GameObject _portableObj = null;
+    private Transform _body = null;
+    private Collider2D _bodyCol = null;
 
     public GameObject GetPortableObj { get { return _portableObj; } }
+    public Transform GetBody { get { return _body; } }
+    public Collider2D GetBodyCol { get { return _bodyCol; } }
     private E_Bodies GetCurrentBody { get { return _currentBody; } }
     private E_Bodies SetCurrentBody { set { _currentBody = value; } }
     public GameObject SetPortableObj { set { _portableObj = value; } }
@@ -34,7 +38,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         PlayerManager.Instance.SetPlayer = this;
 
@@ -77,6 +81,8 @@ public class PlayerController : MonoBehaviour
                 this.transform.SetParent(body);
                 _humanoid.SetPlayer(this);
                 SetCurrentBody = E_Bodies.HUMANOID;
+                _body = body;
+                _bodyCol = body.GetComponent<Collider2D>();
                 GameLoopManager.Instance.UpdatePlayer += OnUpdate;
                 break;
             case 9:
@@ -85,6 +91,8 @@ public class PlayerController : MonoBehaviour
                 this.transform.SetParent(body);
                 _ball.SetPlayer(this);
                 SetCurrentBody = E_Bodies.BALL;
+                _body = body;
+                _bodyCol = body.GetComponent<Collider2D>();
                 GameLoopManager.Instance.UpdatePlayer += OnUpdate;
                 break;
             case 10:

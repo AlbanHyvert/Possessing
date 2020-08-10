@@ -9,14 +9,42 @@ public class CameraController : MonoBehaviour
     {
         _player = PlayerManager.Instance.GetPlayer;
 
+        if(_player != null)
+        {
+            PlayerManager.Instance.OnPlayerPos += FollowPlayer;
+        }
+
         InputManager.Instance.OnMousPosition += MousePosition;
         InputManager.Instance.Possessing += PossessBody;
         PlayerManager.Instance.FindPlayer += GetPlayer;
+
+        GameLoopManager.Instance.GamePaused += IsPaused;
+    }
+
+    private void IsPaused(bool value)
+    {
+        if(value == false)
+        {
+            if(_player != null)
+                PlayerManager.Instance.OnPlayerPos += FollowPlayer;
+
+            InputManager.Instance.OnMousPosition += MousePosition;
+            InputManager.Instance.Possessing += PossessBody;
+            PlayerManager.Instance.FindPlayer += GetPlayer;
+        }
+        else
+        {
+            PlayerManager.Instance.OnPlayerPos -= FollowPlayer;
+            InputManager.Instance.OnMousPosition -= MousePosition;
+            InputManager.Instance.Possessing -= PossessBody;
+            PlayerManager.Instance.FindPlayer -= GetPlayer;
+        }
     }
 
     private void GetPlayer(PlayerController player)
     {
         _player = player;
+        PlayerManager.Instance.OnPlayerPos += FollowPlayer;
     }
 
     private void MousePosition(Vector3 pos)
@@ -89,5 +117,28 @@ public class CameraController : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void FollowPlayer(Vector2 playerPos)
+    {
+        if(CanSeePlayer() == false)
+        {
+            Vector2 selfPos = this.transform.position;
+            selfPos.x = playerPos.x + 3;
+            selfPos.y = playerPos.y + 1;
+            this.transform.position = selfPos;
+        }
+    }
+
+    private bool CanSeePlayer()
+    {
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+
+        if (GeometryUtility.TestPlanesAABB(planes, _player.GetBodyCol.bounds))
+        {
+            return true;
+        }
+        else
+            return false;
     }
 }

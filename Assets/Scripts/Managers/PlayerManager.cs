@@ -17,6 +17,13 @@ public class PlayerManager : Singleton<PlayerManager>
             _player = value;
             if(_findPlayer != null)
                 _findPlayer(_player);
+
+            if (_player != null)
+                GameLoopManager.Instance.UpdateManager += OnUpdate;
+            else
+            {
+                GameLoopManager.Instance.UpdateManager -= OnUpdate;
+            }
         }
     }
 
@@ -32,5 +39,25 @@ public class PlayerManager : Singleton<PlayerManager>
         {
             _findPlayer -= value;
         }
+    }
+
+    private event Action<Vector2> _onPlayerPos = null;
+    public event Action<Vector2> OnPlayerPos
+    {
+        add
+        {
+            _onPlayerPos -= value;
+            _onPlayerPos += value;
+        }
+        remove
+        {
+            _onPlayerPos -= value;
+        }
+    }
+
+    private void OnUpdate()
+    {
+        if (_onPlayerPos != null)
+            _onPlayerPos(_player.transform.position);
     }
 }

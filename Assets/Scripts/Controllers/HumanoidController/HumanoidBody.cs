@@ -163,11 +163,15 @@ public class HumanoidBody : MonoBehaviour
 
             SetStatus = E_BodyStatus.FREE;
             main.startColor = Color.yellow;
+
             FixedJoint2D joint = this.GetComponent<FixedJoint2D>();
-            if(joint != null)
+
+            if (joint != null)
                 joint.connectedBody = null;
-            _player.SetPortableObj = null;
+            if(_player != null)
+                _player.SetPortableObj = null;
             _player = null;
+
             GameLoopManager.Instance.UpdateBody += Tick;
             Direction(Vector2.zero);
         }
@@ -177,10 +181,44 @@ public class HumanoidBody : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
 
+        GameLoopManager.Instance.GamePaused += IsPaused;
+
         Init();
 
+        ParticleSystem.MainModule main = _particle.main;
+
+        switch (_status)
+        {
+            case E_BodyStatus.POSSESSED:
+                main.startColor = Color.blue;
+                break;
+            case E_BodyStatus.FREE:
+                main.startColor = Color.yellow;
+                break;
+            default:
+                break;
+        }
+
         GameLoopManager.Instance.UpdateBody += Tick;
-        InputManager.Instance.Interact += PickUp;
+        //InputManager.Instance.Interact += PickUp;
+    }
+
+    private void IsPaused(bool value)
+    {
+        if(value == false)
+        {
+            if(_player != null)
+                SetPlayer(_player);
+        }
+        else
+        {
+            GameLoopManager.Instance.UpdateBody -= Tick;
+            if(_player != null)
+                _player.SelfUpdate -= Tick;
+            InputManager.Instance.Interact -= PickUp;
+            Direction(Vector2.zero);
+            ChangeState(E_HumanoidStates.IDLE);
+        }
     }
 
     public void Direction(Vector2 dir)

@@ -96,6 +96,20 @@ public class InputManager : Singleton<InputManager>
         base.Awake();
 
         GameLoopManager.Instance.UpdateManager += OnUpdate;
+
+        GameLoopManager.Instance.GamePaused += IsPause;
+    }
+
+    private void IsPause(bool value)
+    {
+        if(value == false)
+        {
+            GameLoopManager.Instance.UpdateManager += OnUpdate;
+        }
+        else
+        {
+            GameLoopManager.Instance.UpdateManager -= OnUpdate;
+        }
     }
 
     private void OnUpdate()
